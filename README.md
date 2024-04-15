@@ -19,15 +19,19 @@ The prerequisites are python3, mosquitto (mqtt broker), mariadb. For additional 
 The broker and database both need to be setup and marvin requires access to both. In the assets directory is marvin_default.conf file, copy this file to marvin.conf and edit it, replace anything with <> with what it wants (username, passwords, domain names and table name). After configuration is setup, run the install script as `sudo ./install.sh`. If it can't find it, you may have to change the execute priveledges with `sudo chmod +x install.sh`.
 
 ## debug
-It should now be located in /usr/local/share/marvin directory. cd into that directory, and run sudo python3 ./main.py. If it is already running as a service, stop it with `systemctl stop marvin`
+If it is currently running as a service, stop it with `sudo systemctl stop marvin` 
+
+The scripts should now be located in /usr/local/share/marvin directory. cd into that directory, and run sudo python3 ./main.py. 
 
 This will run it as an application not in the background. I always do this with any new script just to see if I put something in my code which wasn't exactly python. When satisfied that everything is python, then exit with control-C. Use of the log facility can also check for problems. Any string can be sent to the log file with 
 ```python
-top['log'].write(msg)
+top['log'].write(string)
 top['log'].flush()
 ```
 
-I put the log file at /var/www/html/marvin and can be browsed as local web. I'd recommend another handy tool for debugging is MQTT Explorer (Windows only).
+The log file is written to /var/www/html/marvin/marvin.log and can be browsed with local web client if the webservice is enabled. 
+
+I'd also recommend another handy tool for debugging is MQTT Explorer (Windows only).
 
 ## running daemon
 The daemon runs as a service. After installing successfully and you've tested it and quit. Get the service found, started and enabled with:
@@ -37,7 +41,7 @@ sudo systemctl enable marvin
 sudo systemctl start marvin
 ```
 
-You can check the status with `sudo systemctl status marvin`
+You can check the status with `sudo systemctl status marvin`. It should be active running; otherwise, stop and debug it. 
 
 ## writing modules
 Each module is a class, it has an *\_\_init\_\_* function and a run function. The *\_\_init\_\_* function is passed name and must initialize telemetry, name and payload. name is always assigned to the name passed into *\_\_init\_\_*, payload is assigned to None. telemetry is the MQTT topic that the script wants to watch for.  You can watch multiple topics by assigning telemtry to a list of topics. For example, in propane.py, the class is Propane and telemetry is set with `self.telemetry = ['tele/Propane/SENSOR', 'tele/Propane/STATE']`. Other class variables can be setup in *\_\_init\_\_*. 
@@ -48,7 +52,15 @@ The main program will execute run function and will not expect it to return rath
   while True:
     payload = self.payload.get()
 ```
-The get blocks until the telemetry topic is sent something, once it receives a publication the json or raw data is put into payload and processed. Note that if topic was a string, payload is a string, if telemetry is set as a list, payload becomes an ordered list, that is for the above telemetry example self.telemetry[0] is the payload for 'tele/Propane/SENSOR'. 
+The get blocks until the telemetry topic is sent something, once it receives a publication the json or raw data is put into payload and processed. Note that if topic was a string, payload is a string, if telemetry is set as a list, payload is a dictionary with the topic as the key.
+
+## other examples
+A few examples should be enough to get started with. Other examples:
+1. CPAP - monitors actual sleep time since resmed can't get it right
+2. Freezing - weather station reports freezing temperature, several items are powered up to avoid damage
+3. Air Quality - convert particulate count into Air Quality Index (uses aqi library)
+4. pumps - well, sump, sewage all have pumps - if any run too long it's something that needs addressing.
+
 
 
   
