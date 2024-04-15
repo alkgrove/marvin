@@ -1,0 +1,18 @@
+# Contents of /etc/systemd/system/marvin.service
+[Unit]
+Description=Marvin Semi Smart Daemon
+StartLimitBurst=10
+StartLimitIntervalSec=600
+After=network.target mosquitto.service
+
+[Service]
+Type=forking
+PIDFile=/run/marvin.pid
+Restart=always
+RestartSec=30
+StartLimitAction=reboot
+WorkingDirectory=/usr/local/share/marvin
+ExecStart=/usr/bin/python3 /usr/local/share/marvin/main.py --daemon
+
+[Install]
+WantedBy=multi-user.target
