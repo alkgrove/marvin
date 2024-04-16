@@ -11,10 +11,11 @@ class Propane:
     TANKLENGTH = (120 - TANKDIAMETER)
     TANKCAPRADIUS = (TANKDIAMETER / 2)
 
-    """ Mopeka Propane Level Monitor  """
+    """ Propane Level Monitor  """
     def __init__(self, name):
         self.telemetry = ['tele/Propane/SENSOR', 'tele/Propane/STATE']
-        self.name = name
+        self.modulename = name
+        self.classname = self.__class__.__name__
         self.payload = None
         self.tank = TANK(D = self.TANKDIAMETER, L = self.TANKLENGTH, horizontal = True, sideA = "spherical", sideB = "spherical", sideA_a = self.TANKCAPRADIUS, sideB_a = self.TANKCAPRADIUS)
         # convert cubic inches to gallons

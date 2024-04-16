@@ -8,7 +8,15 @@
 # moves all files from local install into /usr/local folders
 # runs as a service
 # then run this script. 
-# variables to customize 
+# variables to customize
+# after running this do the following to setup the service
+# sudo systemctl daemon-reload
+# sudo systemctl enable marvin
+# sudo systemctl start marvin
+# to see if it is running ok
+# sudo systemctl status marvin 
+# note that service can be used interchangeably with systemctl 
+# once the service is installed. see man service
 if [[ $EUID -ne 0 ]]; then
     echo "Run as root or sudo ./install.sh" 
     exit;

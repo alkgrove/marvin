@@ -12,7 +12,8 @@ class RiceCooker:
     POWERON = 10
     def __init__(self, name):
         self.telemetry = 'tele/ricecooker/SENSOR'
-        self.name = name
+        self.modulename = name
+        self.classname = self.__class__.__name__
         self.payload = None
     
     def run(self, client, top):

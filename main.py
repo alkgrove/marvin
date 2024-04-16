@@ -75,17 +75,17 @@ def main():
     for filename in os.listdir(modulepath):
         fullfilename = modulepath + "/" + filename
         if filename.endswith(".py") and not filename.startswith("__init__"):
-            classname = os.path.splitext(filename)[0]
+            rootname = os.path.splitext(filename)[0]
             try:
-                importlib.import_module(classname)
+                importlib.import_module(rootname)
             except:
                 traceback.print_exc()
-                sys.exit("Unable to import " + classname )
+                sys.exit("Unable to import " + rootname )
             try:
-                for newclass in classList(classname):
+                for newclass in classList(rootname):
                     classes[newclass[0]] = newclass[1]
             except:
-                sys.exit("Unable to parse " + classname)
+                sys.exit("Unable to parse " + rootname)
 
     # Set up the class with a queue to wait on
     for key,value in classes.items():
